@@ -19,12 +19,11 @@ import {
 } from 'lucide-react';
 
 /**
- * TIPAGEM TYPESCRIPT (Adicionado para corrigir erros de Build)
+ * TIPAGEM TYPESCRIPT
  */
 interface FlashcardItem { q: string; a: string; originTopic?: string; }
 interface ClosedItem { q: string; options: string[]; correct: number; originTopic?: string; }
 interface OpenItem { q: string; a: string; originTopic?: string; }
-interface SummaryItem { topic: string; text: string; originTopic?: string; }
 
 interface DatabaseStructure {
   [key: string]: {
@@ -439,7 +438,7 @@ const OpenQuestion = ({ data, onNext }: { data: OpenItem, onNext: () => void }) 
 
 // ================= APP PRINCIPAL =================
 
-export default function App() {
+export default function App(): JSX.Element {
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [mode, setMode] = useState<string | null>(null); // 'summary', 'open_q', 'closed_q', 'flashcard'
   const [view, setView] = useState('selection'); // 'selection', 'study'
@@ -779,5 +778,33 @@ export default function App() {
         </div>
       </div>
     );
-  }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-teal-100 selection:text-teal-900">
+      {view === 'selection' ? renderSelection() : renderStudy()}
+
+      <ModalSettings 
+        isOpen={showSettings} 
+        onClose={() => setShowSettings(false)}
+        apiKey={apiKey}
+        setApiKey={setApiKey}
+      />
+
+      <style>{`
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+      `}</style>
+    </div>
+  );
 }
